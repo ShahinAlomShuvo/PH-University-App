@@ -43,9 +43,9 @@ export type TStudent = {
 
 //for creating static
 
-export interface StudentModel extends Model<TStudent> {
-  isUserExists(id: string): Promise<TStudent | null>;
-}
+// export interface StudentModel extends Model<TStudent> {
+//   isUserExists(id: string): Promise<TStudent | null>;
+// }
 
 // for creating instance
 
