@@ -3,14 +3,17 @@ import { StudentRoutes } from "./modules/student/student.routes";
 import { UserRoutes } from "./modules/user/user.routes";
 import errorHandler from "./middleware/errorHandler.middleware";
 import notFound from "./middleware/notFound.middleware";
+import router from "./routes";
 const app = express();
 
 app.use(express.json());
-app.use("/api/v1/students", StudentRoutes);
-app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+  res.json({
+    status: "success",
+    message: "Welcome to Ph-University API",
+  });
 });
 
 app.use(notFound);
