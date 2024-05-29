@@ -1,8 +1,14 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
 import userValidationSchema from "./user.validation";
+import sendResponse from "../../utils/sendResponse.util";
+import httpStatus from "http-status";
 
-const createStudent = async (req: Request, res: Response) => {
+const createStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { dateOfBirth, password, ...rest } = req.body;
     const date = new Date(dateOfBirth);
@@ -17,17 +23,14 @@ const createStudent = async (req: Request, res: Response) => {
       },
       password
     );
-    return res.status(200).send({
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: "Student created successfully",
       data: student,
     });
-  } catch (err: any) {
-    return res.status(500).send({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 

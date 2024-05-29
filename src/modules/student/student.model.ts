@@ -42,8 +42,13 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 
 const studentSchema = new Schema<TStudent, TStudentModel>(
   {
-    id: { type: String, required: true },
-    user: { type: Schema.Types.ObjectId, ref: "UserModel", required: true },
+    id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "UserModel",
+      required: true,
+      unique: true,
+    },
     name: { type: userNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
     dateOfBirth: { type: Date },
@@ -65,22 +70,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
   { timestamps: true }
 );
 
-// pre save middleware
-
-// studentSchema.pre("save", async function (next) {
-//   this.password = await bcrypt.hash(
-//     this.password,
-//     Number(config.bcryptSaltRounds)
-//   );
-//   next();
-// });
-
 // post save middleware
-
-// studentSchema.post("save", async function (doc, next) {
-//   doc.password = "";
-//   next();
-// });
 
 // studentSchema.post("find", async function (docs, next) {
 //   docs.forEach((doc: any) => {

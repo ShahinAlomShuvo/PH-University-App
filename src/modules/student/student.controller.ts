@@ -1,57 +1,62 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import studentValidationSchema from "./student.validation";
 import { StudentService } from "./student.service";
+import sendResponse from "../../utils/sendResponse.util";
+import httpStatus from "http-status";
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const students = await StudentService.getAllStudents();
-    return res.status(200).send({
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: "Students fetched successfully",
       data: students,
     });
-  } catch (err: any) {
-    return res.status(500).send({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getStudentById = async (req: Request, res: Response) => {
+const getStudentById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const student = await StudentService.getStudentById(id);
-    return res.status(200).send({
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: "Student fetched successfully",
       data: student,
     });
-  } catch (err: any) {
-    return res.status(500).send({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
-    const student = await StudentService.deleteStudent(id);
-    return res.status(200).send({
+    await StudentService.deleteStudent(id);
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: "Student deleted successfully",
       data: null,
     });
-  } catch (err: any) {
-    return res.status(500).send({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 export const StudentController = {
