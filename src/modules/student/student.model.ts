@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import {
   TGuardian,
   TLocalGuardian,
@@ -43,8 +43,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 const studentSchema = new Schema<TStudent, TStudentModel>(
   {
     id: { type: String, required: true },
-    // user: { type: Types.ObjectId, ref: "User", required: true },
-    password: { type: String, required: true },
+    user: { type: Schema.Types.ObjectId, ref: "UserModel", required: true },
     name: { type: userNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
     dateOfBirth: { type: Date },
@@ -60,6 +59,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
     guardian: { type: guardianSchema, required: true },
     localGuardian: { type: localGuardianSchema, required: true },
     profileImg: { type: String },
+    academicDepartment: { type: String },
     isDeleted: { type: Boolean, default: false, required: true },
   },
   { timestamps: true }
@@ -67,32 +67,32 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
 
 // pre save middleware
 
-studentSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcryptSaltRounds)
-  );
-  next();
-});
+// studentSchema.pre("save", async function (next) {
+//   this.password = await bcrypt.hash(
+//     this.password,
+//     Number(config.bcryptSaltRounds)
+//   );
+//   next();
+// });
 
 // post save middleware
 
-studentSchema.post("save", async function (doc, next) {
-  doc.password = "";
-  next();
-});
+// studentSchema.post("save", async function (doc, next) {
+//   doc.password = "";
+//   next();
+// });
 
-studentSchema.post("find", async function (docs, next) {
-  docs.forEach((doc: any) => {
-    doc.password = "";
-  });
-  next();
-});
+// studentSchema.post("find", async function (docs, next) {
+//   docs.forEach((doc: any) => {
+//     doc.password = "";
+//   });
+//   next();
+// });
 
-studentSchema.post("findOne", async function (doc, next) {
-  if (doc) doc.password = "";
-  next();
-});
+// studentSchema.post("findOne", async function (doc, next) {
+//   if (doc) doc.password = "";
+//   next();
+// });
 
 // query middleware
 studentSchema.pre("find", function (next) {
