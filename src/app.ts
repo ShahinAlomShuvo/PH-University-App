@@ -1,6 +1,4 @@
 import express, { Request, Response } from "express";
-import { StudentRoutes } from "./modules/student/student.routes";
-import { UserRoutes } from "./modules/user/user.routes";
 import errorHandler from "./middleware/errorHandler.middleware";
 import notFound from "./middleware/notFound.middleware";
 import router from "./routes";
