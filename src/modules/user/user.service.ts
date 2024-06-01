@@ -58,7 +58,7 @@ const findLatestStudent = async (role: string) => {
     })
     .lean();
 
-  return lastStudent?.id ? lastStudent.id.substring(6) : undefined;
+  return lastStudent?.id ? lastStudent.id : undefined;
 };
 
-export const UserService = { createStudent, findLatestStudent };
+export const UserService = { createStudent };
