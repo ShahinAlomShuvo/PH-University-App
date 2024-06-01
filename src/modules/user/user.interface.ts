@@ -1,8 +1,10 @@
+export type TRole = "admin" | "faculty" | "student";
+export type TStatus = "in-progress" | "blocked";
 export type TUser = {
   id: string;
   password: string;
   needPasswordChange?: boolean;
-  role: "admin" | "faculty" | "student";
-  status: "in-progress" | "blocked";
+  role: TRole;
+  status: TStatus;
   isDeleted?: boolean;
 };

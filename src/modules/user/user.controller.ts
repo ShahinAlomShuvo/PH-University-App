@@ -1,9 +1,9 @@
 import { UserService } from "./user.service";
-import userValidationSchema from "./user.validation";
 import sendResponse from "../../utils/sendResponse.util";
 import httpStatus from "http-status";
 import { RequestHandler } from "express";
 import catchAsync from "../../utils/catchAsync.utils";
+import { TRole } from "./user.interface";
 
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const { dateOfBirth, password, ...rest } = req.body;

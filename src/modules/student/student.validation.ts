@@ -33,7 +33,7 @@ const localGuardianValidationSchema = z.object({
 export const createStudentValidationSchema = z.object({
   name: userNameValidationSchema,
   gender: z.enum(["male", "female", "other"]),
-  dateOfBirth: z.date().optional(),
+  dateOfBirth: z.string().optional(),
   email: z.string().email(),
   contactNo: z.string().min(10).max(15),
   emergencyContactNo: z.string().min(10).max(15),
@@ -45,7 +45,6 @@ export const createStudentValidationSchema = z.object({
   guardian: guardianValidationSchema,
   localGuardian: localGuardianValidationSchema,
   profileImg: z.string().optional(),
-  academicDepartment: z.string(),
   admissionSemester: z.string(),
 });
 

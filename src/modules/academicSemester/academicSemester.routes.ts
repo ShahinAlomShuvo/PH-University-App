@@ -12,4 +12,13 @@ router.post(
   AcademicSemesterControllers.createAcademicSemester
 );
 
+router.get("/", AcademicSemesterControllers.getAllAcademicSemesters);
+router.get("/:id", AcademicSemesterControllers.getAcademicSemesterById);
+router.patch(
+  "/:id",
+  validateRequest(
+    AcademicSemesterValidation.updateAcademicSemesterValidationSchema
+  ),
+  AcademicSemesterControllers.updateAcademicSemester
+);
 export const AcademicSemesterRoutes = router;

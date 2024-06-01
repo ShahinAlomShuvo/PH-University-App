@@ -51,7 +51,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
     },
     name: { type: userNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
-    dateOfBirth: { type: Date },
+    dateOfBirth: { type: String },
     email: { type: String, required: true },
     contactNo: { type: String, required: true },
     emergencyContactNo: { type: String, required: true },
@@ -64,7 +64,6 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
     guardian: { type: guardianSchema, required: true },
     localGuardian: { type: localGuardianSchema, required: true },
     profileImg: { type: String },
-    academicDepartment: { type: String },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: "academicSemester",
