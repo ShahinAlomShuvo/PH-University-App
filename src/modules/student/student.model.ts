@@ -8,11 +8,13 @@ import {
 } from "./student.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
+import { ApiError } from "../../utils/apiError.utils";
+import httpStatus from "http-status";
 
 const userNameSchema = new Schema<TUserName>(
   {
     firstName: { type: String, required: true },
-    middleName: { type: String, required: true },
+    middleName: { type: String, required: false },
     lastName: { type: String, required: true },
   },
   { _id: false }
@@ -111,6 +113,9 @@ studentSchema.pre("aggregate", function (next) {
 studentSchema.statics.isStudentExist = async function (id: string) {
   // const student = await StudentModel.findOne({ id });
   const student = await this.findOne({ id });
+  if (!student) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Student not found");
+  }
   return student;
 };
 

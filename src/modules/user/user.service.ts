@@ -5,14 +5,11 @@ import { TRole, TUser } from "./user.interface";
 import { UserModel } from "./user.model";
 import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
 import { generateStudentId } from "./user.utils";
+import mongoose from "mongoose";
+import { ApiError } from "../../utils/apiError.utils";
+import httpStatus from "http-status";
 
 const createStudent = async (studentData: TStudent, password: string) => {
-  //here "create" is a mongoose builtin static method
-  //here i use custom static method "isStudentExist"
-  //   if (await StudentModel.isStudentExist(data.id)) {
-  //     throw new Error("Student already exist");
-  //   }
-
   const userData: Partial<TUser> = {};
 
   userData.password = password || (config.defaultPassword as string);
@@ -22,27 +19,36 @@ const createStudent = async (studentData: TStudent, password: string) => {
     _id: studentData.admissionSemester,
   });
 
-  const studentId = await findLatestStudent(userData.role);
+  const session = await mongoose.startSession();
 
-  userData.id = await generateStudentId(admissionSemester, studentId);
+  try {
+    session.startTransaction();
+    const studentId = await findLatestStudent(userData.role);
 
-  const user = await UserModel.create(userData);
+    userData.id = await generateStudentId(admissionSemester, studentId);
 
-  if (Object.keys(user).length) {
-    studentData.id = user.id;
-    studentData.user = user._id;
-    const student = await StudentModel.create(studentData);
+    const user = await UserModel.create([userData], { session });
+
+    if (!user.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create user");
+    }
+
+    studentData.id = user[0].id;
+    studentData.user = user[0]._id;
+    const student = await StudentModel.create([studentData], { session });
+
+    if (!student.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create student");
+    }
+
+    await session.commitTransaction();
+    session.endSession();
     return student;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create student");
   }
-
-  // here "save" is a mongoose builtin instance method
-  // here i use custom instance method "isStudentExist"
-
-  // const student = new StudentModel(data);
-  // if (await student.isStudentExist(data.id)) {
-  //   throw new Error("Student already exist");
-  // }
-  // await student.save();
 };
 
 const findLatestStudent = async (role: string) => {
