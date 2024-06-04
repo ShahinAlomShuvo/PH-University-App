@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import { TAcademicDepartment } from "./academic-department.interface";
+import { ApiError } from "../../utils/apiError.utils";
+import httpStatus from "http-status";
 
 const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
@@ -24,7 +26,10 @@ academicDepartmentSchema.pre("save", async function (next) {
     name: this.name,
   });
   if (isDepartmentExist) {
-    throw new Error("Academic department already exist");
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Academic department already exist"
+    );
   }
   next();
 });
@@ -33,7 +38,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const query = this.getQuery();
   const isDepartmentExist = await AcademicDepartmentModel.findOne(query);
   if (!isDepartmentExist) {
-    throw new Error("Academic department not found");
+    throw new ApiError(httpStatus.NOT_FOUND, "Academic department not found");
   }
   next();
 });

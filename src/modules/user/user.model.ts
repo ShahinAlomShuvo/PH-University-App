@@ -36,4 +36,5 @@ userSchema.post("find", async function (docs, next) {
   docs.password = "";
   next();
 });
+
 export const UserModel = model<TUser>("User", userSchema);

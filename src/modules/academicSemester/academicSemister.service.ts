@@ -11,7 +11,10 @@ const createAcademicSemester = async (
   academicSemesterData: TAcademicSemester
 ) => {
   if (nameCodeMapper[academicSemesterData.name] !== academicSemesterData.code) {
-    throw new Error("Invalid academic semester code");
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Invalid academic semester code"
+    );
   }
 
   const academicSemester = await AcademicSemesterModel.create(
