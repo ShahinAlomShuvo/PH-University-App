@@ -10,7 +10,7 @@ const errorHandler = (
   const status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
   const message = err.message || "Something went wrong";
   return res.status(status).send({
-    status,
+    success: false,
     message,
     error: err.errors || err,
   });
