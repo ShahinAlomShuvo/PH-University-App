@@ -49,7 +49,19 @@ export const createStudentValidationSchema = z.object({
   academicDepartment: z.string(),
 });
 
+const partialUserNameValidationSchema = userNameValidationSchema.partial();
+const partialGuardianValidationSchema = guardianValidationSchema.partial();
+const partialLocalGuardianValidationSchema =
+  localGuardianValidationSchema.partial();
+const updateStudentValidationSchema = createStudentValidationSchema
+  .partial()
+  .extend({
+    name: partialUserNameValidationSchema.optional(),
+    guardian: partialGuardianValidationSchema.optional(),
+    localGuardian: partialLocalGuardianValidationSchema.optional(),
+  });
 // Export the validation schema
 export const studentValidation = {
   createStudentValidationSchema,
+  updateStudentValidationSchema,
 };
