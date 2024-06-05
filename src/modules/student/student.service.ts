@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
-import { ApiError } from "../../utils/apiError.utils";
 import { TStudent } from "./student.interface";
 import StudentModel from "./student.model";
 import mongoose from "mongoose";
 import { UserModel } from "../user/user.model";
+import { ApiError } from "../../errors/apiError.utils";
 
 const getStudentById = async (id: string) => {
   const student = await StudentModel.findOne({ id })

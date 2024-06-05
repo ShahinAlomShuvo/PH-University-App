@@ -1,8 +1,9 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from "express";
 import httpStatus from "http-status";
-import { ZodError, ZodIssue } from "zod";
+import { ZodError } from "zod";
 import { TErrorSource } from "../interface/errors.interface";
 import config from "../config";
+import handleZodError from "../errors/handleZodError";
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
@@ -15,19 +16,6 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     },
   ];
 
-  const handleZodError = (err: ZodError) => {
-    const status = httpStatus.BAD_REQUEST;
-    const message = "Validation error";
-    const errorSource: TErrorSource = err.issues.map((issue: ZodIssue) => {
-      return {
-        path: issue.path[issue.path.length - 1],
-        message: issue.message,
-      };
-    });
-
-    return { status, message, errorSource };
-  };
-
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
     status = simplifiedError?.status;
@@ -39,6 +27,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false,
     message,
     errorSource,
+    err,
     stack: config.env === "development" ? err.stack : null,
   });
 };

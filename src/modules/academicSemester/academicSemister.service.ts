@@ -1,11 +1,11 @@
 import httpStatus from "http-status";
-import { ApiError } from "../../utils/apiError.utils";
 import {
   TAcademicSemester,
   TNameCodeMapper,
 } from "./academicSemester.interface";
 import { AcademicSemesterModel } from "./academicSemester.model";
 import { nameCodeMapper } from "./academicSemester.constant";
+import { ApiError } from "../../errors/apiError.utils";
 
 const createAcademicSemester = async (
   academicSemesterData: TAcademicSemester

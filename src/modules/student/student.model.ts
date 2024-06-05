@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import {
   TGuardian,
   TLocalGuardian,
@@ -6,10 +6,8 @@ import {
   TStudentModel,
   TUserName,
 } from "./student.interface";
-import bcrypt from "bcrypt";
-import config from "../../config";
-import { ApiError } from "../../utils/apiError.utils";
 import httpStatus from "http-status";
+import { ApiError } from "../../errors/apiError.utils";
 
 const userNameSchema = new Schema<TUserName>(
   {
