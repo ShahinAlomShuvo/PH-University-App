@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { TErrorSource } from "../interface/errors.interface";
 import config from "../config";
 import handleZodError from "../errors/handleZodError";
+import validationError from "../errors/validationError";
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
@@ -21,13 +22,16 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     status = simplifiedError?.status;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
+  } else if (err.name === "ValidationError") {
+    const simplifiedError = validationError(err);
+    status = simplifiedError?.status;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
   }
-
   return res.status(status).json({
     success: false,
     message,
     errorSource,
-    err,
     stack: config.env === "development" ? err.stack : null,
   });
 };

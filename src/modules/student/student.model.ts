@@ -11,7 +11,7 @@ import { ApiError } from "../../errors/apiError.utils";
 
 const userNameSchema = new Schema<TUserName>(
   {
-    firstName: { type: String, required: true },
+    firstName: { type: String, required: true, maxlength: 10 },
     middleName: { type: String, required: false },
     lastName: { type: String, required: true },
   },
