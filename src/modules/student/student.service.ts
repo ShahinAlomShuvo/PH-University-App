@@ -21,8 +21,41 @@ const getStudentById = async (id: string) => {
   return student;
 };
 
-const getAllStudents = async () => {
-  const students = await StudentModel.find()
+const getAllStudents = async (query: Record<string, unknown>) => {
+  let searchTerm = "";
+  let filter = {};
+  const sort = query.sort ? query.sort : "-createdAt";
+  const limit = query.limit ? query.limit : 10;
+  const skip = query.skip ? query.skip : 0;
+  if (query?.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  filter = {
+    $or: [
+      "name.firstName",
+      "name.middleName",
+      "name.lastName",
+      "presentAddress",
+      "permanentAddress",
+    ].map((field) => ({ [field]: new RegExp(searchTerm, "i") })),
+  };
+
+  if (query.filter) {
+    const fieldsFilter = JSON.parse(query.filter as string);
+    filter = {
+      ...filter,
+      ...fieldsFilter,
+    };
+  }
+
+  let fields = "-__v";
+  if (query.fields) {
+    fields = (query.fields as string).split(",").join(" ");
+  }
+
+  const students = await StudentModel.find(filter)
+    .select(fields)
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -30,7 +63,10 @@ const getAllStudents = async () => {
         path: "academicFaculty",
       },
     })
-    .populate("user");
+    .populate("user")
+    .limit(limit as number)
+    .skip(skip as number)
+    .sort(sort as string);
   return students;
 };
 
