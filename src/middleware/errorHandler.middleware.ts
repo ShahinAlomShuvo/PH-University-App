@@ -7,6 +7,7 @@ import handleZodError from "../errors/handleZodError";
 import validationError from "../errors/validationError";
 import handleCastError from "../errors/castError";
 import handleDuplicateKey from "../errors/handleDuplicateKey";
+import { ApiError } from "../errors/apiError.utils";
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
@@ -39,11 +40,27 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     status = simplifiedError?.status;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
+  } else if (err instanceof ApiError) {
+    status = err.status;
+    message = err.message;
+    errorSource = [
+      {
+        path: "",
+        message: err.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err.message;
+    errorSource = [
+      {
+        path: "",
+        message: err.message,
+      },
+    ];
   }
   return res.status(status).json({
     success: false,
     message,
-    err,
     errorSource,
     stack: config.env === "development" ? err.stack : null,
   });
