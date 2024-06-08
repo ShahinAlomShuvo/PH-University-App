@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
-import { TErrorSource } from "../interface/errors.interface";
+import {
+  TErrorSource,
+  TGenericErrorResponse,
+} from "../interface/errors.interface";
 import httpStatus from "http-status";
 
-const validationError = (error: mongoose.Error.ValidationError) => {
+const validationError = (
+  error: mongoose.Error.ValidationError
+): TGenericErrorResponse => {
   const status = httpStatus.BAD_REQUEST;
   const message = "Validation error";
   const errorSource: TErrorSource = Object.values(error.errors).map(
