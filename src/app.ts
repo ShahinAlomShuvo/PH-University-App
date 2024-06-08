@@ -14,6 +14,11 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+// create for test Unhandled rejection error
+app.get("/test", async (req: Request, res: Response) => {
+  Promise.reject();
+});
+
 app.use(notFound);
 app.use(errorHandler);
 export default app;
