@@ -6,6 +6,7 @@ import config from "../config";
 import handleZodError from "../errors/handleZodError";
 import validationError from "../errors/validationError";
 import handleCastError from "../errors/castError";
+import handleDuplicateKey from "../errors/handleDuplicateKey";
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
@@ -30,6 +31,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     errorSource = simplifiedError?.errorSource;
   } else if (err.name === "CastError") {
     const simplifiedError = handleCastError(err);
+    status = simplifiedError?.status;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
+  } else if (err.code === 11000) {
+    const simplifiedError = handleDuplicateKey(err);
     status = simplifiedError?.status;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
