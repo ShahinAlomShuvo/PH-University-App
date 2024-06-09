@@ -4,6 +4,7 @@ import StudentModel from "./student.model";
 import mongoose from "mongoose";
 import { UserModel } from "../user/user.model";
 import { ApiError } from "../../errors/apiError.utils";
+import { QueryInterface } from "../../interface/query.interface";
 
 const getStudentById = async (id: string) => {
   const student = await StudentModel.findOne({ id })
@@ -21,25 +22,24 @@ const getStudentById = async (id: string) => {
   return student;
 };
 
-const getAllStudents = async (query: Record<string, unknown>) => {
-  let searchTerm = "";
+const getAllStudents = async (query: QueryInterface) => {
   let filter = {};
   const sort = query.sort ? query.sort : "-createdAt";
-  const limit = query.limit ? query.limit : 10;
-  const skip = query.skip ? query.skip : 0;
+  const limit = query.limit ? Number(query.limit) : 10;
+  const skip = query.skip ? Number(query.skip) : 0;
   if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
+    const searchTerm = query.searchTerm as string;
 
-  filter = {
-    $or: [
-      "name.firstName",
-      "name.middleName",
-      "name.lastName",
-      "presentAddress",
-      "permanentAddress",
-    ].map((field) => ({ [field]: new RegExp(searchTerm, "i") })),
-  };
+    filter = {
+      $or: [
+        "name.firstName",
+        "name.middleName",
+        "name.lastName",
+        "presentAddress",
+        "permanentAddress",
+      ].map((field) => ({ [field]: new RegExp(searchTerm, "i") })),
+    };
+  }
 
   if (query.filter) {
     const fieldsFilter = JSON.parse(query.filter as string);
@@ -64,8 +64,8 @@ const getAllStudents = async (query: Record<string, unknown>) => {
       },
     })
     .populate("user")
-    .limit(limit as number)
-    .skip(skip as number)
+    .limit(limit)
+    .skip(skip)
     .sort(sort as string);
   return students;
 };
