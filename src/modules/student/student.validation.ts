@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BloodGroup, Gender } from "../../common/common.constant";
 
 // Define the nested schemas first
 const userNameValidationSchema = z.object({
@@ -32,14 +33,12 @@ const localGuardianValidationSchema = z.object({
 // Define the main schema
 export const createStudentValidationSchema = z.object({
   name: userNameValidationSchema,
-  gender: z.enum(["male", "female", "other"]),
+  gender: z.enum([...Gender] as [string, ...string[]]),
   dateOfBirth: z.string().optional(),
   email: z.string().email(),
   contactNo: z.string().min(10).max(15),
   emergencyContactNo: z.string().min(10).max(15),
-  bloodGroup: z
-    .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .optional(),
+  bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
   presentAddress: z.string().min(1).max(100),
   permanentAddress: z.string().min(1).max(100),
   guardian: guardianValidationSchema,

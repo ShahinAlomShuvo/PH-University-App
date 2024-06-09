@@ -4,10 +4,11 @@ import {
   TLocalGuardian,
   TStudent,
   TStudentModel,
-  TUserName,
 } from "./student.interface";
 import httpStatus from "http-status";
 import { ApiError } from "../../errors/apiError.utils";
+import { TUserName } from "../../common/common.interface";
+import { BloodGroup, Gender } from "../../common/common.constant";
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -50,14 +51,14 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       unique: true,
     },
     name: { type: userNameSchema, required: true },
-    gender: { type: String, enum: ["male", "female", "other"], required: true },
+    gender: { type: String, enum: Gender, required: true },
     dateOfBirth: { type: String },
     email: { type: String, required: true },
     contactNo: { type: String, required: true },
     emergencyContactNo: { type: String, required: true },
     bloodGroup: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      enum: BloodGroup,
     },
     presentAddress: { type: String, required: true },
     permanentAddress: { type: String, required: true },
