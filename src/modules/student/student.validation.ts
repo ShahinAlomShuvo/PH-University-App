@@ -1,18 +1,11 @@
 import { z } from "zod";
 import { BloodGroup, Gender } from "../../common/common.constant";
+import {
+  partialUserNameValidationSchema,
+  userNameValidationSchema,
+} from "../../common/common.validation";
 
 // Define the nested schemas first
-const userNameValidationSchema = z.object({
-  firstName: z
-    .string()
-    .min(1)
-    .max(20)
-    .refine((value) => /^[A-Z]/.test(value), {
-      message: "First Name must start with a capital letter",
-    }),
-  middleName: z.string().min(1).max(20).optional(),
-  lastName: z.string().min(1).max(20),
-});
 
 const guardianValidationSchema = z.object({
   fatherName: z.string().min(1).max(20),
@@ -48,7 +41,6 @@ export const createStudentValidationSchema = z.object({
   academicDepartment: z.string(),
 });
 
-const partialUserNameValidationSchema = userNameValidationSchema.partial();
 const partialGuardianValidationSchema = guardianValidationSchema.partial();
 const partialLocalGuardianValidationSchema =
   localGuardianValidationSchema.partial();
