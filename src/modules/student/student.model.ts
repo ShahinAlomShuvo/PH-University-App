@@ -9,15 +9,7 @@ import httpStatus from "http-status";
 import { ApiError } from "../../errors/apiError.utils";
 import { TUserName } from "../../common/common.interface";
 import { BloodGroup, Gender } from "../../common/common.constant";
-
-const userNameSchema = new Schema<TUserName>(
-  {
-    firstName: { type: String, required: true, maxlength: 10 },
-    middleName: { type: String, required: false },
-    lastName: { type: String, required: true },
-  },
-  { _id: false }
-);
+import { userNameSchema } from "../../common/common.model";
 
 const guardianSchema = new Schema<TGuardian>(
   {
